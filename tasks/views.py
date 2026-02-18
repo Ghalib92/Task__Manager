@@ -1,9 +1,14 @@
 from django.shortcuts import render
-from . models import Projects, Task
-from . serializers import ProjectsSerializer, TaskSerializer, RegisterSerializer
+from . models import Projects, Task, UserProfile
+from . serializers import (
+    ProjectsSerializer, TaskSerializer, RegisterSerializer, 
+    UserSerializer, UserProfileSerializer
+)
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import viewsets, generics, permissions
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, permission_classes
 from django.contrib.auth.models import User
 
 
@@ -12,6 +17,26 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = (permissions.AllowAny,)  # Anyone can register
     serializer_class = RegisterSerializer
+
+
+# Get Current User Info (with profile)
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def get_current_user(request):
+    """Get the currently authenticated user with profile"""
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
+
+# Update User Profile
+class UpdateProfileView(generics.RetrieveUpdateAPIView):
+    """View and update the authenticated user's profile"""
+    serializer_class = UserProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # Return the profile of the logged-in user
+        return self.request.user.profile
 
 
 # Create your views here.
