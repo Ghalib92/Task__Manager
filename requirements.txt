@@ -1,0 +1,15 @@
+django 
+djangorestframework
+psycopg2-binary
+gunicorn
+django-cors-headers
+django-environ
+django-filter
+djangorestframework-simplejwt
+django-rest-auth
+django-allauth
+django-rest-auth[with_social]
+requests
+Pillow
+psycopg2-binary
+django-storages
